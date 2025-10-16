@@ -4,16 +4,29 @@ using Backend.Domain.ValueObjects;
 namespace Backend.Domain.Repositories;
 
 /// <summary>
-/// Repository interface for User entity operations.
-/// Owned by Domain layer to enforce dependency inversion.
+/// Repository interface for User aggregate.
+/// 
+/// TODO: Ticket #2 - Implement user repository interface
+/// - Add GetByIdAsync method
+/// - Add GetByEmailAsync method
+/// - Add AddAsync method
+/// - Add UpdateAsync method
+/// - Add DeleteAsync method
 /// </summary>
 public interface IUserRepository
 {
-    Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
-    Task<User?> GetByEmailAsync(Email email, CancellationToken cancellationToken = default);
-    Task<List<User>> GetByIdsAsync(List<Guid> ids, CancellationToken cancellationToken = default);
-    Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken = default);
-    Task AddAsync(User user, CancellationToken cancellationToken = default);
-    void Update(User user);
-    void Remove(User user);
+    // TODO: Implement GetByIdAsync method
+    // Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+
+    // TODO: Implement GetByEmailAsync method
+    // Task<User?> GetByEmailAsync(Email email, CancellationToken cancellationToken = default);
+
+    // TODO: Implement AddAsync method
+    // Task AddAsync(User user, CancellationToken cancellationToken = default);
+
+    // TODO: Implement UpdateAsync method
+    // Task UpdateAsync(User user, CancellationToken cancellationToken = default);
+
+    // TODO: Implement DeleteAsync method
+    // Task DeleteAsync(Guid id, CancellationToken cancellationToken = default);
 }

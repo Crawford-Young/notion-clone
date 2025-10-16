@@ -1,87 +1,44 @@
 namespace Backend.Domain.ValueObjects;
 
 /// <summary>
-/// SortKey value object using fractional indexing for efficient reordering.
-/// Enables O(1) insertions without renumbering siblings.
-/// Uses NUMERIC(18,9) precision to match database schema.
+/// Sort key value object for block positioning.
+/// 
+/// TODO: Ticket #9 - Implement sort key
+/// - Add Value property (decimal)
+/// - Implement constructor
+/// - Add comparison operators
+/// - Add static methods for generating sort keys
 /// </summary>
-public readonly struct SortKey : IEquatable<SortKey>, IComparable<SortKey>
+public class SortKey
 {
-    public decimal Value { get; }
+    // TODO: Implement Value property
+    // public decimal Value { get; private set; }
 
-    private SortKey(decimal value)
-    {
-        Value = value;
-    }
+    // TODO: Implement constructor
+    // public SortKey(decimal value)
+    // {
+    //     Value = value;
+    // }
 
-    /// <summary>
-    /// Creates a SortKey with the specified value.
-    /// Value must be positive.
-    /// </summary>
-    public static SortKey Create(decimal value)
-    {
-        if (value <= 0)
-        {
-            throw new ArgumentException("SortKey value must be positive", nameof(value));
-        }
+    // TODO: Implement comparison operators
+    // public static bool operator <(SortKey left, SortKey right)
+    // public static bool operator >(SortKey left, SortKey right)
+    // public static bool operator <=(SortKey left, SortKey right)
+    // public static bool operator >=(SortKey left, SortKey right)
 
-        return new SortKey(value);
-    }
+    // TODO: Implement equality operators
+    // public static bool operator ==(SortKey left, SortKey right)
+    // public static bool operator !=(SortKey left, SortKey right)
+    // public override bool Equals(object? obj)
+    // public override int GetHashCode()
 
-    /// <summary>
-    /// Generates a new SortKey between two existing keys using fractional indexing.
-    /// This enables O(1) insertions without renumbering other items.
-    /// </summary>
-    /// <param name="before">The key before the insertion point (null if prepending)</param>
-    /// <param name="after">The key after the insertion point (null if appending)</param>
-    /// <returns>A new SortKey positioned between before and after</returns>
-    public static SortKey Between(SortKey? before, SortKey? after)
-    {
-        // Both null: return default starting position
-        if (before == null && after == null)
-        {
-            return First;
-        }
+    // TODO: Implement static methods for generating sort keys
+    // public static SortKey Between(SortKey before, SortKey after)
+    // public static SortKey After(SortKey after)
+    // public static SortKey Before(SortKey before)
+    // public static SortKey First()
+    // public static SortKey Last()
 
-        // Only before exists: append after it
-        if (after == null)
-        {
-            return new SortKey(before!.Value.Value + 1m);
-        }
-
-        // Only after exists: prepend before it
-        if (before == null)
-        {
-            return new SortKey(after.Value.Value / 2m);
-        }
-
-        // Both exist: find midpoint
-        var midpoint = (before.Value.Value + after.Value.Value) / 2m;
-        return new SortKey(midpoint);
-    }
-
-    /// <summary>
-    /// Default first position for a new sequence.
-    /// </summary>
-    public static SortKey First => new(1m);
-
-    public int CompareTo(SortKey other) => Value.CompareTo(other.Value);
-
-    public override string ToString() => Value.ToString("F9"); // Format with 9 decimal places
-
-    public bool Equals(SortKey other) => Value == other.Value;
-
-    public override bool Equals(object? obj) => obj is SortKey key && Equals(key);
-
-    public override int GetHashCode() => Value.GetHashCode();
-
-    // Comparison operators
-    public static bool operator ==(SortKey left, SortKey right) => left.Equals(right);
-    public static bool operator !=(SortKey left, SortKey right) => !(left == right);
-    public static bool operator <(SortKey left, SortKey right) => left.CompareTo(right) < 0;
-    public static bool operator >(SortKey left, SortKey right) => left.CompareTo(right) > 0;
-    public static bool operator <=(SortKey left, SortKey right) => left.CompareTo(right) <= 0;
-    public static bool operator >=(SortKey left, SortKey right) => left.CompareTo(right) >= 0;
-
-    public static implicit operator decimal(SortKey key) => key.Value;
+    // TODO: Implement ToString method
+    // public override string ToString() => Value.ToString();
 }

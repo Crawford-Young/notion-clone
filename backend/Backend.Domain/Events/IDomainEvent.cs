@@ -2,12 +2,14 @@ namespace Backend.Domain.Events;
 
 /// <summary>
 /// Marker interface for domain events.
-/// Domain events represent something that happened in the domain that you want other parts of the same domain to be aware of.
+/// 
+/// TODO: Ticket #1 - Implement domain event interface
+/// - Add any common properties if needed
+/// - Consider adding event metadata (timestamp, event id, etc.)
 /// </summary>
 public interface IDomainEvent
 {
-    /// <summary>
-    /// The date and time when the event occurred.
-    /// </summary>
-    DateTime OccurredAt { get; }
+    // TODO: Consider adding common properties
+    // DateTimeOffset OccurredAt { get; }
+    // Guid EventId { get; }
 }

@@ -1,6 +1,5 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { API_BASE_URL } from '@/lib/config';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 interface User {
   id: string;
@@ -9,69 +8,77 @@ interface User {
 }
 
 interface AuthState {
-  user: User | null;
-  token: string | null; // Store token for SSE/EventSource (can't use HttpOnly cookie)
   isAuthenticated: boolean;
-
-  login: (user: User, token: string) => void;
+  user: User | null;
+  token: string | null;
+  login: (email: string, password: string) => Promise<void>;
+  register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => void;
-  updateUser: (user: Partial<User>) => void;
-  fetchToken: () => Promise<void>;
+  setAuth: (user: User, token: string) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
+      isAuthenticated: false,
       user: null,
       token: null,
-      isAuthenticated: false,
 
-      login: (user, token) => {
-        // Token stored in memory for SSE/EventSource (HttpOnly cookie can't be accessed by JS)
-        set({ user, token, isAuthenticated: true });
+      login: async (email: string, password: string) => {
+        // TODO: Ticket #5 - Authentication UI
+        // Implement actual login API call
+        // const response = await api.auth.login({ email, password });
+        // set({ isAuthenticated: true, user: response.user, token: response.token });
+
+        // Temporary mock implementation
+        console.log("Login attempt:", { email, password });
+        set({
+          isAuthenticated: true,
+          user: { id: "1", email, name: "Test User" },
+          token: "mock-token",
+        });
       },
 
-      logout: async () => {
-        // Call backend to clear HttpOnly cookie
-        try {
-          await fetch(`${API_BASE_URL}/api/auth/logout`, {
-            method: 'POST',
-            credentials: 'include',
-          });
-        } catch (error) {
-          console.error('Logout error:', error);
-        }
-        set({ user: null, token: null, isAuthenticated: false });
+      register: async (name: string, email: string, password: string) => {
+        // TODO: Ticket #5 - Authentication UI
+        // Implement actual registration API call
+        // const response = await api.auth.register({ name, email, password });
+        // set({ isAuthenticated: true, user: response.user, token: response.token });
+
+        // Temporary mock implementation
+        console.log("Register attempt:", { name, email, password });
+        set({
+          isAuthenticated: true,
+          user: { id: "1", email, name },
+          token: "mock-token",
+        });
       },
 
-      updateUser: (updatedFields) => {
-        set((state) => ({
-          user: state.user ? { ...state.user, ...updatedFields } : null,
-        }));
+      logout: () => {
+        set({ isAuthenticated: false, user: null, token: null });
       },
 
-      fetchToken: async () => {
-        try {
-          const response = await fetch(`${API_BASE_URL}/api/auth/token`, {
-            credentials: 'include',
-          });
-
-          if (response.ok) {
-            const data = await response.json();
-            set({ token: data.token });
-          }
-        } catch (error) {
-          console.error('Failed to fetch token:', error);
-        }
+      setAuth: (user: User, token: string) => {
+        set({ isAuthenticated: true, user, token });
       },
     }),
     {
-      name: 'auth-storage',
+      name: "auth-storage",
       partialize: (state) => ({
-        user: state.user,
         isAuthenticated: state.isAuthenticated,
-        // Don't persist token to localStorage for security
+        user: state.user,
+        token: state.token,
       }),
     }
   )
 );
+
+/* 
+TODO: Ticket #5 - Authentication UI
+- This file has the basic auth store structure
+- Implement actual API calls for login and register
+- Add proper error handling
+- Add token refresh logic
+- Add proper TypeScript types
+- Test persistence and state management
+*/

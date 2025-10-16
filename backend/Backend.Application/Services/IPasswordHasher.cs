@@ -2,17 +2,17 @@ namespace Backend.Application.Services;
 
 /// <summary>
 /// Service for hashing and verifying passwords.
-/// Implementation should use a secure algorithm like BCrypt or Argon2.
+/// 
+/// TODO: Ticket #2 - Implement password hasher service
+/// - Add HashPassword method
+/// - Add VerifyPassword method
+/// - Use BCrypt or Argon2 for security
 /// </summary>
 public interface IPasswordHasher
 {
-    /// <summary>
-    /// Hash a plain text password.
-    /// </summary>
-    string HashPassword(string password);
+    // TODO: Implement HashPassword method
+    // string HashPassword(string password);
 
-    /// <summary>
-    /// Verify a password against a hash.
-    /// </summary>
-    bool VerifyPassword(string password, string passwordHash);
+    // TODO: Implement VerifyPassword method
+    // bool VerifyPassword(string password, string passwordHash);
 }

@@ -3,13 +3,18 @@ using Backend.Domain.Events;
 namespace Backend.Application.Services;
 
 /// <summary>
-/// Service responsible for dispatching domain events to their respective handlers.
-/// This abstraction allows the Infrastructure layer to remain decoupled from specific event handlers.
+/// Service for dispatching domain events.
+/// 
+/// TODO: Ticket #1 - Implement domain event dispatcher
+/// - Add DispatchAsync method
+/// - Add DispatchEventsAsync method
+/// - Handle event processing and cleanup
 /// </summary>
 public interface IDomainEventDispatcher
 {
-    /// <summary>
-    /// Dispatches a domain event to all registered handlers.
-    /// </summary>
-    Task DispatchAsync(IDomainEvent domainEvent, CancellationToken cancellationToken = default);
+    // TODO: Implement DispatchAsync method
+    // Task DispatchAsync(IDomainEvent domainEvent, CancellationToken cancellationToken = default);
+
+    // TODO: Implement DispatchEventsAsync method
+    // Task DispatchEventsAsync(IEnumerable<IDomainEvent> domainEvents, CancellationToken cancellationToken = default);
 }

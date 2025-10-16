@@ -6,46 +6,48 @@ namespace Backend.Domain.Entities;
 /// <summary>
 /// Block entity representing a block of content within a page.
 /// Part of Documents bounded context.
+/// 
+/// TODO: Ticket #9 - Implement block entity
+/// - Add properties: Id, PageId, ParentBlockId, SortKey, Type, Json
+/// - Implement constructor with validation
+/// - Add UpdateType method
+/// - Add UpdateSortKey method
+/// - Add UpdateJson method
 /// </summary>
 public class Block
 {
-    public Guid Id { get; private set; }
-    public Guid PageId { get; private set; }
-    public Guid? ParentBlockId { get; private set; }
-    public SortKey SortKey { get; private set; }
-    public BlockType Type { get; private set; }
-    public string? Json { get; private set; }
+    // TODO: Implement properties
+    // public Guid Id { get; private set; }
+    // public Guid PageId { get; private set; }
+    // public Guid? ParentBlockId { get; private set; }
+    // public SortKey SortKey { get; private set; }
+    // public BlockType Type { get; private set; }
+    // public string? Json { get; private set; }
 
-    public Block(Guid pageId, SortKey sortKey, BlockType type, Guid? parentBlockId, string? json)
-    {
-        if (pageId == Guid.Empty)
-        {
-            throw new ArgumentException("PageId cannot be empty", nameof(pageId));
-        }
+    // TODO: Implement constructor
+    // public Block(Guid pageId, SortKey sortKey, BlockType type, Guid? parentBlockId, string? json)
+    // {
+    //     // Validation logic here
+    // }
 
-        Id = Guid.NewGuid();
-        PageId = pageId;
-        SortKey = sortKey;
-        Type = type;
-        ParentBlockId = parentBlockId;
-        Json = json;
-    }
+    // TODO: Implement UpdateType method
+    // public void UpdateType(BlockType newType)
+    // {
+    //     // Update logic here
+    // }
 
-    public void UpdateType(BlockType newType)
-    {
-        Type = newType;
-    }
+    // TODO: Implement UpdateSortKey method
+    // public void UpdateSortKey(SortKey newSortKey)
+    // {
+    //     // Update logic here
+    // }
 
-    public void UpdateSortKey(SortKey newSortKey)
-    {
-        SortKey = newSortKey;
-    }
+    // TODO: Implement UpdateJson method
+    // public void UpdateJson(string? json)
+    // {
+    //     // Update logic here
+    // }
 
-    public void UpdateJson(string? json)
-    {
-        Json = json;
-    }
-
-    // EF Core constructor
-    private Block() { }
+    // TODO: Add private constructor for EF Core
+    // private Block() { }
 }

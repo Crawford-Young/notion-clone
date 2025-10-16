@@ -1,72 +1,117 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { Auth } from '@/features/auth';
-import { apiClient } from '@/lib/api/client';
-import { useAuthStore } from '@/stores/auth-store';
-import { toast } from 'sonner';
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { useAuthStore } from "@/stores/auth-store";
+import { useState } from "react";
 
-export const Route = createFileRoute('/login')({
+const loginSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
+type LoginForm = z.infer<typeof loginSchema>;
+
+export const Route = createFileRoute("/login")({
   component: LoginPage,
 });
 
 function LoginPage() {
   const navigate = useNavigate();
-  const login = useAuthStore((state) => state.login);
+  const { login } = useAuthStore();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = async (values: Record<string, unknown>) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginForm>({
+    resolver: zodResolver(loginSchema),
+  });
+
+  const onSubmit = async (data: LoginForm) => {
+    setIsLoading(true);
     try {
-      const response = await apiClient.POST('/api/auth/login', {
-        body: {
-          email: values.email as string,
-          password: values.password as string,
-        },
-      });
-
-      if (response.error) {
-        throw new Error('Login failed');
-      }
-
-      const result = response.data as any;
-
-      // Token is stored in HttpOnly cookie AND in memory for SSE/EventSource
-      login({
-        id: result.user.id,
-        email: result.user.email,
-        name: result.user.name,
-      }, result.token);
-
-      toast.success('Welcome back!', {
-        description: `Signed in as ${result.user.email}`,
-      });
-
-      await navigate({ to: '/' });
+      // TODO: Ticket #5 - Authentication UI
+      // Implement actual login logic here
+      // await login(data.email, data.password);
+      console.log("Login data:", data);
+      navigate({ to: "/organizations" });
     } catch (error) {
-      toast.error('Login failed', {
-        description: error instanceof Error ? error.message : 'Unable to connect to the server',
-      });
-      // Don't throw - let the form handle the error state
+      console.error("Login error:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-4">
-      <Auth.Provider onSubmit={handleLogin}>
-        <Auth.Form className="w-full max-w-md">
-          <Auth.Header description="Enter your credentials to continue">Welcome back</Auth.Header>
-
-          <Auth.Content>
-            <Auth.Field name="email" label="Email" type="email" placeholder="hello@example.com" />
-
-            <Auth.Field name="password" label="Password" type="password" placeholder="••••••••" />
-
-            <Auth.Submit>Sign in</Auth.Submit>
-
-            <div className="text-center text-sm">
-              <span className="text-muted-foreground">Don't have an account? </span>
-              <Auth.Link onClick={() => navigate({ to: '/register' })}>Create one</Auth.Link>
+    <div className="flex min-h-screen items-center justify-center">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle>Sign In</CardTitle>
+          <CardDescription>
+            Enter your email and password to sign in to your account
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="Enter your email"
+                {...register("email")}
+              />
+              {errors.email && (
+                <p className="text-sm text-red-500">{errors.email.message}</p>
+              )}
             </div>
-          </Auth.Content>
-        </Auth.Form>
-      </Auth.Provider>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="Enter your password"
+                {...register("password")}
+              />
+              {errors.password && (
+                <p className="text-sm text-red-500">
+                  {errors.password.message}
+                </p>
+              )}
+            </div>
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? "Signing in..." : "Sign In"}
+            </Button>
+          </form>
+          <div className="mt-4 text-center text-sm">
+            Don't have an account?{" "}
+            <Link to="/register" className="text-primary hover:underline">
+              Sign up
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
+
+/* 
+TODO: Ticket #5 - Authentication UI
+- This file has the basic login form structure
+- Implement actual login API call
+- Add proper error handling and user feedback
+- Test form validation
+- Ensure proper navigation after successful login
+*/

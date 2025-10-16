@@ -1,12 +1,22 @@
 namespace Backend.Application.Services;
 
 /// <summary>
-/// Service for generating JWT tokens.
+/// Service for generating and validating JWT tokens.
+/// 
+/// TODO: Ticket #2 - Implement JWT token generator service
+/// - Add GenerateToken method
+/// - Add ValidateToken method
+/// - Add GetUserIdFromToken method
+/// - Use secure JWT configuration
 /// </summary>
 public interface IJwtTokenGenerator
 {
-    /// <summary>
-    /// Generate a JWT token for a user.
-    /// </summary>
-    string GenerateToken(Guid userId, string email, string name);
+    // TODO: Implement GenerateToken method
+    // string GenerateToken(Guid userId, string email, string name);
+
+    // TODO: Implement ValidateToken method
+    // bool ValidateToken(string token);
+
+    // TODO: Implement GetUserIdFromToken method
+    // Guid? GetUserIdFromToken(string token);
 }

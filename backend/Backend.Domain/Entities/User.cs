@@ -5,44 +5,34 @@ namespace Backend.Domain.Entities;
 /// <summary>
 /// User entity representing a user account.
 /// Part of IdentityOrg bounded context.
+/// 
+/// TODO: Ticket #2 - Implement user entity with proper validation
+/// - Add properties: Id, Email, Name, PasswordHash, CreatedAt
+/// - Implement constructor with validation
+/// - Add UpdateName method
+/// - Add private constructor for EF Core
 /// </summary>
 public class User
 {
-    public Guid Id { get; private set; }
-    public Email Email { get; private set; }
-    public string Name { get; private set; }
-    public string PasswordHash { get; private set; }
-    public DateTimeOffset CreatedAt { get; private set; }
+    // TODO: Implement properties
+    // public Guid Id { get; private set; }
+    // public Email Email { get; private set; }
+    // public string Name { get; private set; }
+    // public string PasswordHash { get; private set; }
+    // public DateTimeOffset CreatedAt { get; private set; }
 
-    public User(Email email, string name, string passwordHash)
-    {
-        if (string.IsNullOrWhiteSpace(name))
-        {
-            throw new ArgumentException("Name cannot be empty", nameof(name));
-        }
+    // TODO: Implement constructor with validation
+    // public User(Email email, string name, string passwordHash)
+    // {
+    //     // Validation logic here
+    // }
 
-        if (string.IsNullOrWhiteSpace(passwordHash))
-        {
-            throw new ArgumentException("Password hash cannot be empty", nameof(passwordHash));
-        }
+    // TODO: Implement UpdateName method
+    // public void UpdateName(string name)
+    // {
+    //     // Validation and update logic here
+    // }
 
-        Id = Guid.NewGuid();
-        Email = email;
-        Name = name.Trim();
-        PasswordHash = passwordHash;
-        CreatedAt = DateTimeOffset.UtcNow;
-    }
-
-    public void UpdateName(string name)
-    {
-        if (string.IsNullOrWhiteSpace(name))
-        {
-            throw new ArgumentException("Name cannot be empty", nameof(name));
-        }
-
-        Name = name.Trim();
-    }
-
-    // EF Core constructor
-    private User() { }
+    // TODO: Add private constructor for EF Core
+    // private User() { }
 }

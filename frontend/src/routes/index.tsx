@@ -1,9 +1,9 @@
-import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
-import { Button } from '@/components/ui/button';
-import { useAuthStore } from '@/stores/auth-store';
-import { useEffect } from 'react';
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
+import { useAuthStore } from "@/stores/auth-store";
+import { useEffect } from "react";
 
-export const Route = createFileRoute('/')({
+export const Route = createFileRoute("/")({
   component: HomeComponent,
 });
 
@@ -13,7 +13,7 @@ function HomeComponent() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate({ to: '/organizations' });
+      navigate({ to: "/organizations" });
     }
   }, [isAuthenticated, navigate]);
 
@@ -53,3 +53,11 @@ function HomeComponent() {
     </div>
   );
 }
+
+/* 
+TODO: Ticket #4 - Project Setup & Routing
+- This file is already set up with basic routing
+- Verify TanStack Router is working correctly
+- Test navigation between pages
+- Ensure authentication flow works properly
+*/

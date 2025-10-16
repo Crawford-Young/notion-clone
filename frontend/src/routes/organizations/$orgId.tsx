@@ -1,119 +1,87 @@
-import { createFileRoute, redirect, Outlet, useMatches } from '@tanstack/react-router';
-import { useQuery } from '@tanstack/react-query';
-import { useAuthStore } from '@/stores/auth-store';
-import { apiClient } from '@/lib/api/client';
-import { useRemoveMember, useInviteByEmail } from '@/hooks/use-organization-mutations';
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
 import {
-  OrgSettingsProvider,
-  OrgSettingsHeader,
-  OrgSettingsTitle,
-  OrgSettingsContent,
-  OrgSettingsSection,
-  OrgMembersList,
-  InviteByEmailForm,
-} from '@/features/organizations/components';
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Plus } from "lucide-react";
 
-export const Route = createFileRoute('/organizations/$orgId')({
-  beforeLoad: () => {
-    const { isAuthenticated } = useAuthStore.getState();
-    if (!isAuthenticated) {
-      throw redirect({ to: '/login' });
-    }
-  },
-  component: OrganizationSettingsPage,
+export const Route = createFileRoute("/organizations/$orgId")({
+  component: OrganizationPage,
 });
 
-function OrganizationSettingsPage() {
+function OrganizationPage() {
   const { orgId } = Route.useParams();
-  const { user } = useAuthStore();
-  const matches = useMatches();
 
-  // Fetch organization details (hook must be called before any returns)
-  const { data: organization, isLoading } = useQuery({
-    queryKey: ['organization', orgId],
-    queryFn: async () => {
-      const response = await apiClient.GET('/api/Organizations/{id}', {
-        params: { path: { id: orgId } },
-      });
-      if (response.error) {
-        throw new Error('Failed to fetch organization');
-      }
-      return response.data;
-    },
-  });
+  // TODO: Ticket #10 - Organization Dashboard
+  // Implement organization and pages fetching
+  // const { data: organization } = useOrganization(orgId);
+  // const { data: pages } = usePages(orgId);
 
-  // Mutations
-  const removeMemberMutation = useRemoveMember(orgId);
-  const inviteByEmailMutation = useInviteByEmail(orgId);
-
-  // Check if we're on a child route (like pages) - AFTER all hooks
-  const hasChildRoute = matches.some(match =>
-    match.routeId === '/organizations/$orgId/pages/$pageId'
-  );
-
-  // If on a child route, just render the outlet
-  if (hasChildRoute) {
-    return <Outlet />;
-  }
-
-  const handleRemoveMember = async (userId: string) => {
-    if (confirm('Are you sure you want to remove this member?')) {
-      removeMemberMutation.mutate(userId);
-    }
-  };
-
-  const handleInviteByEmail = async (email: string, role: string) => {
-    await inviteByEmailMutation.mutateAsync({ email, role });
-  };
-
-  if (isLoading || !organization) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-gray-500">Loading organization...</div>
-      </div>
-    );
-  }
-
-  // Find current user's role
-  const currentUserRole = organization.members?.find(m => m.userId === user?.id)?.role;
+  const organization = { id: orgId, name: "My Organization" };
+  const pages = [
+    { id: "1", title: "Welcome Page", updatedAt: new Date() },
+    { id: "2", title: "Project Notes", updatedAt: new Date() },
+  ];
 
   return (
-    <OrgSettingsProvider
-        orgId={orgId}
-        orgName={organization.name ?? ''}
-        members={organization.members as any}
-        currentUserRole={currentUserRole}
-        onRemoveMember={handleRemoveMember}
-      >
-        <OrgSettingsHeader>
-          <OrgSettingsTitle />
-        </OrgSettingsHeader>
+    <div className="container mx-auto p-6">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-3xl font-bold">{organization.name}</h1>
+          <p className="text-muted-foreground">Organization workspace</p>
+        </div>
+        <Button>
+          <Plus className="w-4 h-4 mr-2" />
+          Create Page
+        </Button>
+      </div>
 
-        <OrgSettingsContent>
-          <OrgSettingsSection
-            title="General"
-            description="Basic information about this organization"
-          >
-            <div className="rounded-lg border border-gray-200 p-4">
-              <div className="space-y-2">
-                <div className="text-sm font-medium text-gray-700">Organization Name</div>
-                <div className="text-base text-gray-900">{organization.name}</div>
-              </div>
-            </div>
-          </OrgSettingsSection>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {pages.map((page) => (
+          <Card key={page.id} className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <CardTitle>{page.title}</CardTitle>
+              <CardDescription>
+                Updated {page.updatedAt.toLocaleDateString()}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button asChild className="w-full">
+                <Link to={`/organizations/${orgId}/pages/${page.id}`}>
+                  Open Page
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
 
-          <OrgSettingsSection
-            title="Members"
-            description="Manage who has access to this organization"
-          >
-            <div className="space-y-4">
-              {(currentUserRole === 'owner' || currentUserRole === 'admin') && (
-                <InviteByEmailForm onSubmit={handleInviteByEmail} />
-              )}
-              <OrgMembersList />
-            </div>
-          </OrgSettingsSection>
-        </OrgSettingsContent>
-      </OrgSettingsProvider>
+      {pages.length === 0 && (
+        <div className="text-center py-12">
+          <h2 className="text-xl font-semibold mb-2">No pages yet</h2>
+          <p className="text-muted-foreground mb-4">
+            Create your first page to get started
+          </p>
+          <Button>
+            <Plus className="w-4 h-4 mr-2" />
+            Create Page
+          </Button>
+        </div>
+      )}
+    </div>
   );
 }
+
+/* 
+TODO: Ticket #10 - Organization Dashboard
+- This file has the basic organization page structure
+- Implement organization and pages fetching from API
+- Add page creation functionality
+- Add loading and error states
+- Add page deletion functionality
+- Test page navigation
+*/

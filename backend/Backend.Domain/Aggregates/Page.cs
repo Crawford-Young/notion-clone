@@ -6,121 +6,55 @@ using Backend.Domain.ValueObjects;
 namespace Backend.Domain.Aggregates;
 
 /// <summary>
-/// Page aggregate root representing a collaborative document page.
+/// Page aggregate root representing a document page with collaborative editing support.
 /// Part of Documents bounded context.
+/// 
+/// TODO: Ticket #8 - Implement page aggregate
+/// - Add properties: Id, OrgId, Title, CreatedBy, CreatedAt, Blocks collection
+/// - Implement constructor with validation
+/// - Add AddBlock method
+/// - Add RemoveBlock method
+/// - Add UpdateTitle method
+/// - Implement domain events
 /// </summary>
 public class Page : AggregateRoot
 {
-    private List<Block> _blocks = new();
+    // TODO: Implement backing field for blocks
+    // private List<Block> _blocks = new();
 
-    public Guid Id { get; private set; }
-    public Guid OrgId { get; private set; }
-    public string Title { get; private set; }
-    public Guid CreatedBy { get; private set; }
-    public DateTimeOffset CreatedAt { get; private set; }
+    // TODO: Implement properties
+    // public Guid Id { get; private set; }
+    // public Guid OrgId { get; private set; }
+    // public string Title { get; private set; }
+    // public Guid CreatedBy { get; private set; }
+    // public DateTimeOffset CreatedAt { get; private set; }
+    // public ICollection<Block> Blocks => _blocks;
 
-    public ICollection<Block> Blocks => _blocks;
+    // TODO: Implement constructor
+    // public Page(Guid orgId, string title, Guid createdBy)
+    // {
+    //     // Validation logic here
+    // }
 
-    public Page(Guid orgId, string title, Guid createdBy)
-    {
-        if (orgId == Guid.Empty)
-        {
-            throw new ArgumentException("OrgId cannot be empty", nameof(orgId));
-        }
+    // TODO: Implement AddBlock method
+    // public Block AddBlock(BlockType type, Guid? parentBlockId, string? json)
+    // {
+    //     // Create new block
+    //     // Add to collection
+    //     // Add domain event
+    //     // Return block
+    // }
 
-        if (string.IsNullOrWhiteSpace(title))
-        {
-            throw new ArgumentException("Title cannot be empty", nameof(title));
-        }
+    // TODO: Implement RemoveBlock method
+    // public void RemoveBlock(Guid blockId)
+    // {
+    //     // Find and remove block
+    //     // Add domain event
+    // }
 
-        if (createdBy == Guid.Empty)
-        {
-            throw new ArgumentException("CreatedBy cannot be empty", nameof(createdBy));
-        }
-
-        Id = Guid.NewGuid();
-        OrgId = orgId;
-        Title = title.Trim();
-        CreatedBy = createdBy;
-        CreatedAt = DateTimeOffset.UtcNow;
-
-        // Raise domain event
-        AddDomainEvent(new PageCreatedEvent(Id, OrgId, CreatedBy, Title));
-    }
-
-    public void ChangeTitle(string newTitle, Guid changedBy)
-    {
-        if (string.IsNullOrWhiteSpace(newTitle))
-        {
-            throw new ArgumentException("Title cannot be empty", nameof(newTitle));
-        }
-
-        var oldTitle = Title;
-        Title = newTitle.Trim();
-
-        // Raise domain event
-        AddDomainEvent(new PageTitleChangedEvent(Id, OrgId, oldTitle, Title, changedBy));
-    }
-
-    public void Delete(Guid deletedBy)
-    {
-        // Raise domain event
-        AddDomainEvent(new PageDeletedEvent(Id, OrgId, Title, deletedBy));
-    }
-
-    public Block AddBlock(SortKey sortKey, BlockType type, Guid? parentBlockId, string? json)
-    {
-        var block = new Block(Id, sortKey, type, parentBlockId, json);
-        _blocks.Add(block);
-
-        // Raise domain event
-        AddDomainEvent(new BlockAddedToPageEvent(Id, block.Id, type.Value));
-
-        return block;
-    }
-
-    public void UpdateBlock(Guid blockId, BlockType? newType, SortKey? newSortKey, string? newJson)
-    {
-        var block = _blocks.FirstOrDefault(b => b.Id == blockId);
-        if (block == null)
-        {
-            throw new InvalidOperationException($"Block {blockId} not found on page {Id}");
-        }
-
-        if (newType != null)
-        {
-            block.UpdateType(newType.Value);
-        }
-
-        if (newSortKey != null)
-        {
-            block.UpdateSortKey(newSortKey.Value);
-        }
-
-        if (newJson != null)
-        {
-            block.UpdateJson(newJson);
-        }
-
-        // Could raise domain event here if needed: BlockUpdatedEvent
-    }
-
-    public void RemoveBlock(Guid blockId)
-    {
-        var block = _blocks.FirstOrDefault(b => b.Id == blockId);
-        if (block == null)
-        {
-            throw new InvalidOperationException($"Block {blockId} not found on page {Id}");
-        }
-
-        _blocks.Remove(block);
-    }
-
-    public Block? GetBlock(Guid blockId)
-    {
-        return _blocks.FirstOrDefault(b => b.Id == blockId);
-    }
-
-    // EF Core constructor
-    private Page() { }
+    // TODO: Implement UpdateTitle method
+    // public void UpdateTitle(string title)
+    // {
+    //     // Validation and update logic
+    // }
 }
