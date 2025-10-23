@@ -1,5 +1,7 @@
 # Notion Clone - Development Skeleton
 
+something
+
 This project has been reset to a skeleton state to allow for implementation of the development tickets. The skeleton maintains the original project structure but removes the implementation details, replacing them with TODO comments for each ticket.
 
 **Important**: This skeleton preserves the original file structure and only removes implementation details. No new files were created - only existing files were modified to include TODO placeholders.
